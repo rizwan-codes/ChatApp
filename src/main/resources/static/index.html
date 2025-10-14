@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .api-info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .endpoint {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        code {
+            background: #f1f1f1;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Chat App API</h1>
+        <p>Welcome to the Chat Application! The API is running successfully.</p>
+        
+        <div class="api-info">
+            <h3>Available API Endpoints:</h3>
+            
+            <div class="endpoint">
+                <strong>POST</strong> <code>/api/auth/register</code><br>
+                Register a new user
+            </div>
+            
+            <div class="endpoint">
+                <strong>POST</strong> <code>/api/auth/login</code><br>
+                Login with existing credentials
+            </div>
+            
+            <div class="endpoint">
+                <strong>GET</strong> <code>/api/auth/verify</code><br>
+                Verify JWT token (requires authentication)
+            </div>
+        </div>
+        
+        <div class="api-info">
+            <h3>Test the API:</h3>
+            <p>You can test the endpoints using tools like Postman or curl:</p>
+            <pre>
+curl -X POST http://localhost:8080/chatapp/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"testuser","password":"testpass","displayName":"Test User"}'
+            </pre>
+        </div>
+    </div>
+</body>
+</html>
