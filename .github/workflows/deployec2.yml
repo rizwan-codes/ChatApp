@@ -1,3 +1,51 @@
+#name: Build & Deploy to EC2 (Tomcat WAR)
+#
+#on:
+#  push:
+#    branches:
+#      - main
+#      - development
+#
+#jobs:
+#  build-deploy:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Set up Java
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: 'temurin'
+#          java-version: '17'
+#
+#      - name: Build with Maven
+#        run: mvn clean package -DskipTests
+#
+#      - name: Copy WAR to EC2
+#        uses: appleboy/scp-action@v0.1.7
+#        with:
+#          host: ${{ secrets.EC2_HOST }}
+#          username: ubuntu
+#          key: ${{ secrets.EC2_KEY }}
+#          source: "target/*.war"
+#          target: "/home/ubuntu/"
+#
+#      - name: Deploy WAR on Tomcat
+#        uses: appleboy/ssh-action@v0.1.7
+#        with:
+#          host: ${{ secrets.EC2_HOST }}
+#          username: ubuntu
+#          key: ${{ secrets.EC2_KEY }}
+#          script: |
+#            sudo systemctl stop tomcat10
+#            sudo rm -rf /var/lib/tomcat10/webapps/*.war
+#            sudo rm -rf /var/lib/tomcat10/webapps/ROOT/
+#            sudo mv /home/ubuntu/*.war /var/lib/tomcat10/webapps/ROOT.war
+#            sudo systemctl start tomcat10
+#            sleep 10
+#            sudo systemctl status tomcat10
 name: Build & Deploy to EC2 (Tomcat WAR)
 
 on:
@@ -18,7 +66,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: Build with Maven
         run: mvn clean package -DskipTests
@@ -39,10 +87,14 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           script: |
+            echo "=== Starting deployment on $(date) ===" | sudo tee -a /home/ubuntu/deploy.log
+            ls -lh /home/ubuntu/*.war | sudo tee -a /home/ubuntu/deploy.log
             sudo systemctl stop tomcat10
             sudo rm -rf /var/lib/tomcat10/webapps/*.war
             sudo rm -rf /var/lib/tomcat10/webapps/ROOT/
             sudo mv /home/ubuntu/*.war /var/lib/tomcat10/webapps/ROOT.war
+            sudo chown tomcat:tomcat /var/lib/tomcat10/webapps/ROOT.war
             sudo systemctl start tomcat10
             sleep 10
-            sudo systemctl status tomcat10
+            sudo systemctl status tomcat10 | sudo tee -a /home/ubuntu/deploy.log
+            echo "=== Deployment completed ===" | sudo tee -a /home/ubuntu/deploy.log
